@@ -23,16 +23,17 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     cscope
-     ipython-notebook
-     octave
+     ;;cscope
+     ;;ipython-notebook
+     ;;octave
+     lua
      auto-completion
      better-defaults
      emacs-lisp
-     haskell
+    ;; haskell
      ;; git
      ;; markdown
-     sql
+     ;;sql
      org
      (colors :variables
              colors-enable-nyan-cat-progress-bar t)
@@ -41,14 +42,15 @@ values."
        c-c++-default-mode-for-headers 'c++-mode
        c-c++-enable-clang-support t
        )
-     ess
+     ;; ess
+     shaders
      (chinese :variables 
               chinese-enable-youdao-dict t)
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
-     ;; spell-checking
-     ;; syntax-checking
+      (shell :variables
+             shell-default-height 30
+             shell-default-position 'bottom)
+      spell-checking
+      syntax-checking
      ;; version-control
      )
    ;; List of additional packages that will be installed without being
@@ -57,6 +59,8 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(
                                       nasm-mode
+                                      irony
+                                      company-irony
                                       )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -256,15 +260,22 @@ values."
 It is called immediately after `dotspacemacs/init'.  You are free to put almost
 any user code here.  The exception is org related code, which should be placed
 in `dotspacemacs/user-config'."
+  (setq configuration-layer--elpa-archives
+        '(("melpa-cn" . "https://elpa.zilongshanren.com/melpa/")
+          ("org-cn"   . "https://elpa.zilongshanren.com/org/")
+          ("gnu-cn"   . "https://elpa.zilongshanren.com/gnu/")))
   )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
-  (add-to-list 'load-path "/home/nameless/.emacs.d/ecb-master")
-  (require 'ecb)
-
+  ;;(add-to-list 'load-path "/home/nameless/.emacs.d/ecb-master")
+  ;;(require 'ecb)
+  ;;irony
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
+  (global-company-mode)
   (setq org-capture-templates
         '(("s" "Someday" entry (file+headline "~/GTD/Someday.org" "Someday")
            "* TODO")))
@@ -308,3 +319,25 @@ layers configuration. You are free to put any user code."
  ;; If there is more than one, they won't work right.
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/GTD/Someday.org" "~/GTD/tasks.org")))
+ '(package-selected-packages
+   (quote
+    (glsl-mode youdao-dictionary yapfify xterm-color ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline shell-pop restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters quelpa pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox pangu-spacing org-projectile org-present org-pomodoro org-plus-contrib org-download org-bullets open-junk-file neotree nasm-mode mwim multi-term move-text macrostep lua-mode lorem-ipsum live-py-mode linum-relative link-hint info+ indent-guide ido-vertical-mode hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot flyspell-correct-helm flycheck-pos-tip flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump disaster define-word cython-mode company-statistics company-irony company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format chinese-pyim auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+)
