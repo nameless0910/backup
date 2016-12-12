@@ -23,47 +23,96 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ;;cscope
-     ;;ipython-notebook
-     ;;octave
-     lua
-     auto-completion
+     ;;chat
+
+     ;;checkers
+     (spell-checking :variables
+                     spell-checking-enable-by-default nil)
+     (syntax-checking :variables
+                      syntax-checking-enable-by-default nil)
+
+     ;;completion
+     (auto-completion :variables auto-completion-enable-sort-by-usage t
+                      auto-completion-enable-snippets-in-popup t
+                      auto-completion-enable-help-tooltip 'manual
+                        :disabled-for org markdown)
+     ivy
+
+     ;;emacs
      better-defaults
-     emacs-lisp
-    ;; haskell
-     ;; git
-     ;; markdown
-     ;;sql
+     (ibuffer :variables ibuffer-group-buffers-by 'projects)
      org
+     
+     ;;fun
+     emoji
+
+     ;;intl
+     (chinese :variables
+              chinese-enable-youdao-dict t)
+
+     ;;lang
+     asm
+     bibtex
+     (c-c++ :variables
+             c-c++-default-mode-for-headers 'c++-mode
+             c-c++-enable-clang-support t)
+     csv
+     emacs-lisp
+     graphviz
+     latex
+     lua
+     markdown
+     plantuml
+     python
+     shaders
+     shell-scripts
+     sql
+     yaml
+
+     ;;source-control
+     git
+     github
+     (version-control :variables version-control-diff-tool 'diff-hl)
+
+     ;;tags
+     cscope
+
+     ;;themes
      (colors :variables
              colors-enable-nyan-cat-progress-bar t)
-     python
-     ( c-c++ :variables
-       c-c++-default-mode-for-headers 'c++-mode
-       c-c++-enable-clang-support t
-       )
-     ;; ess
-     shaders
-     (chinese :variables 
-              chinese-enable-youdao-dict t)
+
+     ;;tools
+     dash
+     deft
+     fasd
+     finance
+     imenu-list
+     pandoc
+     pdf-tools
+     (ranger :variables
+             ranger-show-preview t)
+     restclient
+
       (shell :variables
-             shell-default-height 30
-             shell-default-position 'bottom)
-      spell-checking
-      syntax-checking
-     ;; version-control
-     )
+             shell-default-shell 'eshell)
+      systemd
+
+      ;;web-services
+      elfeed
+      search-engine
+
+      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(
-                                      nasm-mode
                                       irony
                                       company-irony
                                       )
    ;; A list of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(
+                                    )
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'. (default t)
@@ -260,48 +309,34 @@ values."
 It is called immediately after `dotspacemacs/init'.  You are free to put almost
 any user code here.  The exception is org related code, which should be placed
 in `dotspacemacs/user-config'."
-  (setq configuration-layer--elpa-archives
-        '(("melpa-cn" . "https://elpa.zilongshanren.com/melpa/")
-          ("org-cn"   . "https://elpa.zilongshanren.com/org/")
-          ("gnu-cn"   . "https://elpa.zilongshanren.com/gnu/")))
-  )
-
+)
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
-  ;;(add-to-list 'load-path "/home/nameless/.emacs.d/ecb-master")
-  ;;(require 'ecb)
-  ;;irony
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (global-company-mode)
+
+  ;;flycheck
+  (setq flycheck-global-modes '(c++-mode c-mode))
+
+  ;;org
+  (setq org-bullets-bullet-list '("■" "◆" "▲" "▶"))
   (setq org-capture-templates
         '(("s" "Someday" entry (file+headline "~/GTD/Someday.org" "Someday")
            "* TODO")))
-(setq url-automatic-caching t)
-(global-set-key (kbd "C-c y") 'youdao-dictionary-search)
-(global-set-key (kbd "C-c v") 'youdao-dictionary-play-voice-at-point)
-(setq org-refile-targets
-      '(("~/GTD/tasks.org" . (:level . 1))))
-(add-to-list'auto-mode-alist '(".(asm|s)$". nasm-mode))
-;;mysql
-(setq sql-user "root")
-(setq sql-password "741963456528ytd?")
-;;set transparent effect
- (global-set-key [(f11)] 'loop-alpha)
- (setq alpha-list '((100 100) (95 65) (85 55) (75 45) (65 35)))
- (defun loop-alpha ()
-      (interactive)
-      (let ((h (car alpha-list)))                ;; head value will set to
-               ((lambda (a ab)
-                           (set-frame-parameter (selected-frame) 'alpha (list a ab))
-                           (add-to-list 'default-frame-alist (cons 'alpha (list a ab)))
-                           ) (car h) (car (cdr h)))
-               (setq alpha-list (cdr (append alpha-list (list h))))
-               )
-    )
+  (setq org-refile-targets
+        '(("~/GTD/tasks.org" . (:level . 1))))
 
+  ;;chinese
+  (spacemacs//set-monospaced-font   "Source Code Pro" "Hiragino Sans GB" 14 16)
+  (global-set-key (kbd "C-c y") 'youdao-dictionary-search)
+  (global-set-key (kbd "C-c v") 'youdao-dictionary-play-voice-at-point)
+
+  ;;deft
+  (setq deft-directory "~/Notes")
+
+  ;;irony
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
 
 )
 ;; Do not write anything past this comment. This is where Emacs will
@@ -332,7 +367,7 @@ This function is called at the very end of Spacemacs initialization."
  '(org-agenda-files (quote ("~/GTD/Someday.org" "~/GTD/tasks.org")))
  '(package-selected-packages
    (quote
-    (glsl-mode youdao-dictionary yapfify xterm-color ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline shell-pop restart-emacs request rainbow-mode rainbow-identifiers rainbow-delimiters quelpa pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox pangu-spacing org-projectile org-present org-pomodoro org-plus-contrib org-download org-bullets open-junk-file neotree nasm-mode mwim multi-term move-text macrostep lua-mode lorem-ipsum live-py-mode linum-relative link-hint info+ indent-guide ido-vertical-mode hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot flyspell-correct-helm flycheck-pos-tip flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump disaster define-word cython-mode company-statistics company-irony company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format chinese-pyim auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell))))
+    (yapfify xterm-color which-key spaceline org-projectile open-junk-file info+ indent-guide hungry-delete htmlize google-translate evil-matchit eshell-z company-statistics aggressive-indent ace-link yasnippet company smartparens bind-map helm helm-core hydra spacemacs-theme zeal-at-point youdao-dictionary yaml-mode xcscope x86-lookup ws-butler window-numbering wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org systemd sql-indent smex smeargle shell-pop restart-emacs request ranger rainbow-mode rainbow-identifiers rainbow-delimiters quelpa pyvenv pytest pyenv-mode py-isort plantuml-mode pip-requirements persp-mode pdf-tools pcre2el paradox pangu-spacing pandoc-mode ox-pandoc orgit org-ref org-present org-pomodoro org-plus-contrib org-download org-bullets ob-restclient ob-http neotree nasm-mode mwim multi-term move-text mmm-mode markdown-toc magit-gitflow magit-gh-pulls macrostep lua-mode lorem-ipsum live-py-mode linum-relative link-hint ledger-mode ivy-purpose ivy-hydra insert-shebang ido-vertical-mode ibuffer-projectile hy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-make graphviz-dot-mode golden-ratio gnuplot glsl-mode gitignore-mode github-search github-clone github-browse-file gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md flyspell-correct-ivy flycheck-pos-tip flycheck-ledger flx-ido fish-mode find-by-pinyin-dired fill-column-indicator fasd fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-prompt-extras esh-help engine-mode emoji-cheat-sheet-plus elisp-slime-nav elfeed-web elfeed-org elfeed-goodies dumb-jump disaster diff-hl deft define-word cython-mode csv-mode counsel-projectile counsel-dash company-shell company-restclient company-quickhelp company-irony company-emoji company-c-headers company-auctex company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format chinese-pyim auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile adaptive-wrap ace-window ace-pinyin ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
