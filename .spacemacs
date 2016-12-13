@@ -83,7 +83,6 @@ values."
 
      ;;tools
      dash
-     deft
      fasd
      finance
      imenu-list
@@ -320,19 +319,26 @@ layers configuration. You are free to put any user code."
 
   ;;org
   (setq org-bullets-bullet-list '("■" "◆" "▲" "▶"))
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "STARTED(s)" "WAIT(w@/!)" "|" "DONE(d!)")
+          (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k@)" "|" "FIXED(f!/@)")
+          (sequence "|" "CANCELLED(c@)")
+          (sequence "APPT(a@)" "|" "FINISHED(f@)")))
+  (setq org-tag-alist '(("@book" . ?b) ("@projects" . ?p) ("@homework" . ?h) ("@daily" . ?d)))
   (setq org-capture-templates
         '(("s" "Someday" entry (file+headline "~/GTD/Someday.org" "Someday")
-           "* TODO")))
+           "* TODO %T\n")
+          ("d" "Diary" entry (file+datetree "~/GTD/diary.org")
+           "* %?\n %U\n")))
   (setq org-refile-targets
-        '(("~/GTD/tasks.org" . (:level . 1))))
+        '(("~/GTD/tasks.org" . (:level . 1))
+          ("~/GTD/plan.org" . (:level . 1))))
+
 
   ;;chinese
   (spacemacs//set-monospaced-font   "Source Code Pro" "Hiragino Sans GB" 14 16)
   (global-set-key (kbd "C-c y") 'youdao-dictionary-search)
   (global-set-key (kbd "C-c v") 'youdao-dictionary-play-voice-at-point)
-
-  ;;deft
-  (setq deft-directory "~/Notes")
 
   ;;irony
   (add-hook 'c++-mode-hook 'irony-mode)
